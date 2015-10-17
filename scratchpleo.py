@@ -1,8 +1,9 @@
 #Initialise all global variables to empty
 scratchData, scriptArray, initCode, sensorCode, otherCode, currentFunction, variableList, motionList, soundList, broadcastList, receiveList = "", "", "", "", "", "", "", "", "", "", ""
 
-import sys
-import json
+import sys #required for command line parameters and to exit the script in an error
+import json #required to convert JSON to list
+import re #required to check for valid variable and function names
 
 def getScratchJSON():
 	#get the JSON data from a Scratch file
@@ -242,10 +243,38 @@ def addCode(codeToAdd):
 		#depending on the results of testing (do users have random code littering up their Scratch projects often?)
 
 def checkValidFunctionName(nameToCheck):
-	print "Checking function name..."
+	testVar = nameToCheck
+	try:
+		int(testVar)
+	except TypeError:
+		#found a list where we should have a string
+		dError("Found an expression where only a broadcast name should be present. Only broadcast names selected through the drop-down menu can be used.")
+	except ValueError:
+		pass
+	if nameToCheck == "":
+		dError("Found empty broadcast name. Retry with a function name entered.")
+	if re.match("^[A-Za-z0-9 ]+$", nameToCheck):
+		pass
+	else:
+		#function name contains a non alpa-numeric or space character
+		dError("Found invalid characters in broadcast name '" + nameToCheck + "' . Broadcast names can only contain letters, numbers and spaces.")
 
 def checkValidVariableName(nameToCheck):
-	print "Checking function name..."
+	testVar = nameToCheck
+	try:
+		int(testVar)
+	except TypeError:
+		#found a list where we should have a string
+		dError("Found an expression where only a variable name should be present. Only variable names selected through the drop-down menu can be used.")
+	except ValueError:
+		pass
+	if nameToCheck == "":
+		dError("Found empty variable name. Retry with a variable name entered.")
+	if re.match("^[A-Za-z0-9 ]+$", nameToCheck):
+		pass
+	else:
+		#variable name contains a non alpa-numeric or space character
+		dError("Found invalid characters in variable name '" + nameToCheck + "' . Variable names can only contain letters, numbers and spaces.")
 
 def isInt(intToTest):
 	try: 
@@ -259,7 +288,6 @@ def isInt(intToTest):
 
 #getScratchJSON()
 #processScript()
-test = ["hello", "there"]
-test1 = "hello world"
-test1 = test1.replace(" ", "_")
-print test1
+tt= ["hello", "world"]
+checkValidFunctionName(tt)
+print "457"
