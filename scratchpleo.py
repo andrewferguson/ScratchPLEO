@@ -149,6 +149,9 @@ def translateScript(tArray):
 		if tArray[1] not in variableList:
 			variableList.append(tArray[1])
 		addCode(tArray[1] + " = " + parseExpression(tArray[3]) + ";")
+	
+	else:
+		dError("Found invalid: '" + tArray[0] + "' . This is not supported."
 
 
 def parseExpression(tArray):
