@@ -25,14 +25,14 @@ def processScript():
 def translateScript(tArray):
 	#translate the Scratch code to PAWN script
 	
-	global currentFunction, receiveList
+	global currentFunction, receiveList, soundList, motionList, broadcastList, variableList
 	
 	if tArray[0] == "whenGreenFlag":
 		if initCode <> "":
 			dError("Multiple 'When Green Flag Clicked' blocks in project. Only one is allowed.")
 		currentFunction = "init"
 		
-	if tArray[0] == "whenIReceive":
+	elif tArray[0] == "whenIReceive":
 		if tArray[1][0:7] == "sensor_":
 			#the project is trying to access one of PLEO's sensors
 			validSensors = ["battery","ir","head","chin","back","left_leg","right_leg","left_arm","right_arm","tail","front_left","front_right","back_left","back_right","card_detect","write_protect","light","object","mouth","sound_dir","light_change","sound_loud","tilt","terminal","usb_detect","wakeup","battery_temp","shake","sound_loud_change","beacon","battery_current","packet","edge_in_front","edge_on_right","edge_on_left","object_in_front","object_on_left","object_on_right","touch_tap","touch_hold","touch_release","abuse_picked_up","trackabe_oject","msg_received","msg_gone"]
@@ -53,13 +53,13 @@ def translateScript(tArray):
 				addCode("}\n\n")
 			addCode("public pleoFunction_" + tArray[2] + "()\n{")
 	
-	if tArray[0] == "doIf":
+	elif tArray[0] == "doIf":
 		addCode("if " + parseExpression(tArray[1]) + "\n{")
 		for x in range(0, len(tArray[2])):
 			translateScript(tArray[2][x])
 		addCode("}")
 	
-	if tArray[0] == "doIfElse":
+	elif tArray[0] == "doIfElse":
 		addCode("if " + parseExpression(tArray[1]) + "\n{")
 		for x in range(0, len(tArray[2])):
 			translateScript(tArray[2][x])
@@ -68,22 +68,88 @@ def translateScript(tArray):
 			translateScript(tArray[3][x])
 		addCode("}")
 	
-	if tArray[0] == "doForever":
+	elif tArray[0] == "doForever":
 		addCode("while (true)\n{")
 		for x in range(0, len(tArray[1])):
 			translateScript(tArray[1][x])
 		addCode("}")
 	
-	if tArray[0] == "doRepeat":
+	elif tArray[0] == "doRepeat":
 		addCode("for (new i = 1; i <= " + parseExpression(tArray[1]) + "; i++)\n{")
 		for x in range(0, len(tArray[2])):
 			translateScript(tArray[2][x])
 		addCode("}")
 	
-	if tArray[0] == "doWaitUntil":
-		addCode("while " = parseExpression(tArray[1]) + "\n{\nsleep;\n}"
+	elif tArray[0] == "doWaitUntil":
+		addCode("while " + parseExpression(tArray[1]) + "\n{\nsleep;\n}")
+
+	elif tArray[0] == "call":
+		addCode("motion_play(mot_" + tArray[2].lower() + ");")
+		if tArray[1][-1:len(tArray[1])] <> "%s":
+			#this is a "...and wait" motion, make sure to wait until it is done
+			addCode("while(motion_is_playing(mot_" + tArray[2].lower() + "))")
+			addCode("{\nsleep;\n}")
+		if tArray[2] not in motionList:
+			motionList.append(tArray[2])
 	
+	elif tArray[0] == "procDef":
+		#procDef is used for the custom blocks defined inside ScratchPLEO
+		#the defenitions exist only to allow the blocks to be called from within Scratch
+		#they should not be translated
+		pass
+
+	elif tArray[0] == "playSound":
+		try:
+			int(tArray)
+			dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
+		except TypeError:
+			#we have a list
+			dError("Found an expression where a sound file name should be. Only sound files selected through the drop-down menus can be used.")
+		except ValueError:
+			#we have a non-integer thing (a.k.a a string)
+			addCode("sound_play(snd_" + tArray[1].lower() + ");")
+			if tArray[1] not in soundList:
+				soundList.append(tArray[1])
 	
+	elif tArray[0] == "doPlaySoundAndWait":
+		try:
+			int(tArray)
+			dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
+		except TypeError:
+			#we have a list
+			dError("Found an expression where a sound file name should be. Only sound files selected through the drop-down menus can be used.")
+		except ValueError:
+			#we have a non-integer thing (a.k.a a string)
+			addCode("sound_play(snd_" + tArray[1].lower() + ");")
+			addCode("while (sound_is_playing(snd_" + tArray[1].lower() + "))")
+			addCode("{\nsleep;\n}")
+			if tArray[1] not in soundList:
+				soundList.append(tArray[1])
+	
+	elif tArray[0] == "doBroadcastAndWait":
+		checkValidFunctionName(tArray[1])
+		tArray[1] = tArray[1].replace(" ", "_")
+		if tArray[1] not in broadcastList:
+			broadcastList.append(tArray[1])
+		tArray[1] = "pleoFunction_" + tArray[1]
+		addCde(tArray[1] + ";")
+	
+	elif tArray[0] == "changeVar:by:":
+		checkValidVariableName(tArray[1])
+		tArray[1] = tArray[1].replace(" ", "_")
+		tArray[1] = "pleoVar_" + tArray[1]
+		if tArray[1] not in variableList:
+			variableList.append(tArray[1])
+		addCode(tArray[1] + " = " tArray[1] + " + " + parseExpression(tArray[3]) + ";")
+	
+	elif tArray[0] == "setVar:to:":
+		checkValidVariableName(tArray[1])
+		tArray[1] = tArray[1].replace(" ", "_")
+		tArray[1] = "pleoVar_" + tArray[1]
+		if tArray[1] not in variableList:
+			variableList.append(tArray[1])
+		addCode(tArray[1] + " = " + parseExpression(tArray[3]) + ";")
+
 
 def parseExpression(tArray):
 	#takes a Scratch expression (as an array) and converts it to a PAWN expression (asn int or bool)
@@ -94,7 +160,7 @@ def parseExpression(tArray):
 	try: 
 		int(tArray)
 		#we have an integer
-		print "int"
+		dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
 		
 	except ValueError:
 		#we have something not an int
@@ -170,4 +236,6 @@ def isInt(intToTest):
 #getScratchJSON()
 #processScript()
 test = ["hello", "there"]
-parseExpression("hi there")
+test1 = "hello world"
+test1 = test1.replace(" ", "_")
+print test1
