@@ -218,7 +218,28 @@ def dError(error):
 	sys.exit()
 
 def addCode(codeToAdd):
-	print codeToAdd
+	global initCode, sensorCode, otherCode
+	
+	if currentFunction == "init":
+		#this code should be run when PLEO is first switched on
+		initCode = initCode + "\n" + codeToAdd
+		
+	elif currentFunction == "sensor":
+		#this code is linked to a sensor
+		sensorCode = sensorCode + "\n" + codeToAdd
+		
+	elif currentFunction == "other":
+		#this code is associated with a user-defined function
+		otherCode = otherCode + "\n" + codeToAdd
+	
+	else:
+		#oh, dear.
+		#a block without a starting hat has been found.
+		
+		#alert the user and stop the script
+		dError("A block has been found that has no starting block. Please ermove this block and run ScratchPLEO again."
+		#NOTE: this may change to 'alert the user, don't process this code and continue'
+		#depending on the results of testing (do users have random code littering up their Scratch projects often?)
 
 def checkValidFunctionName(nameToCheck):
 	print "Checking function name..."
