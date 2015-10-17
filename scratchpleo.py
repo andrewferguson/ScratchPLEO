@@ -140,7 +140,7 @@ def translateScript(tArray):
 		tArray[1] = "pleoVar_" + tArray[1]
 		if tArray[1] not in variableList:
 			variableList.append(tArray[1])
-		addCode(tArray[1] + " = " tArray[1] + " + " + parseExpression(tArray[3]) + ";")
+		addCode(tArray[1] + " = " + tArray[1] + " + " + parseExpression(tArray[2]) + ";")
 	
 	elif tArray[0] == "setVar:to:":
 		checkValidVariableName(tArray[1])
@@ -148,10 +148,10 @@ def translateScript(tArray):
 		tArray[1] = "pleoVar_" + tArray[1]
 		if tArray[1] not in variableList:
 			variableList.append(tArray[1])
-		addCode(tArray[1] + " = " + parseExpression(tArray[3]) + ";")
+		addCode(tArray[1] + " = " + parseExpression(tArray[2]) + ";")
 	
 	else:
-		dError("Found invalid: '" + tArray[0] + "' . This is not supported."
+		dError("Found invalid: '" + tArray[0] + "' . This is not supported.")
 
 
 def parseExpression(tArray):
@@ -237,7 +237,7 @@ def addCode(codeToAdd):
 		#a block without a starting hat has been found.
 		
 		#alert the user and stop the script
-		dError("A block has been found that has no starting block. Please ermove this block and run ScratchPLEO again."
+		dError("A block has been found that has no starting block. Please ermove this block and run ScratchPLEO again.")
 		#NOTE: this may change to 'alert the user, don't process this code and continue'
 		#depending on the results of testing (do users have random code littering up their Scratch projects often?)
 
