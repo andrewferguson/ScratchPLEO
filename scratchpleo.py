@@ -1,5 +1,5 @@
 #Initialise all global variables to empty
-scratchData, scriptArray, initCode, sensorCode, otherCode, currentFunction, variableList, motionList, soundList, broadcastList, receiveList = "", "", "", "", "", "", "", "", "", "", ""
+scratchData, scriptArray, initCode, sensorCode, otherCode, currentFunction, variableList, motionList, soundList, broadcastList, receiveList, repeatCount = "", "", "", "", "", "", "", "", "", "", "", 1
 
 import sys #required for command line parameters and to exit the script in an error
 import json #required to convert JSON to list
@@ -76,7 +76,8 @@ def translateScript(tArray):
 		addCode("}")
 	
 	elif tArray[0] == "doRepeat":
-		addCode("for (new i = 1; i <= " + parseExpression(tArray[1]) + "; i++)\n{")
+		addCode("for (new i" + repeatCount + " = 1; i" + repeatCount + " <= " + parseExpression(tArray[1]) + "; i" + repeatCount + "++)\n{")
+		repeatCount = repeatCount + 1
 		for x in range(0, len(tArray[2])):
 			translateScript(tArray[2][x])
 		addCode("}")
@@ -215,7 +216,7 @@ def parseExpression(tArray):
 
 def dError(error):
 	#reports an error and exits the program
-	print error
+	print "Error: " + error
 	sys.exit()
 
 def addCode(codeToAdd):
@@ -275,6 +276,16 @@ def checkValidVariableName(nameToCheck):
 	else:
 		#variable name contains a non alpa-numeric or space character
 		dError("Found invalid characters in variable name '" + nameToCheck + "' . Variable names can only contain letters, numbers and spaces.")
+
+def createProjectFiles():
+	#this function creates the .UPF and .P files required for the project to be built
+	
+	#it assumes that motions are in a folder './motions/'
+	#it assumes that sounds are in a folder './sounds/'
+	#it assumes that PAWN is in a folder './pawn/OS_ID/'
+	#where OS_ID is 'win', 'mac', or 'linux'
+	
+	sensorFile = '<ugone_project name="scratchpleo">\n\n<options>\n<
 
 def isInt(intToTest):
 	try: 
