@@ -277,15 +277,9 @@ def checkValidVariableName(nameToCheck):
 		#variable name contains a non alpa-numeric or space character
 		dError("Found invalid characters in variable name '" + nameToCheck + "' . Variable names can only contain letters, numbers and spaces.")
 
-def createProjectFiles():
-	#this function creates the .UPF and .P files required for the project to be built
+def createProjectFile():
+	#this function creates the requited PAWN file for this project
 	
-	#it assumes that motions are in a folder './motions/'
-	#it assumes that sounds are in a folder './sounds/'
-	#it assumes that PAWN is in a folder './pawn/OS_ID/'
-	#where OS_ID is 'win', 'mac', or 'linux'
-	
-	sensorFile = '<ugone_project name="scratchpleo">\n\n<options>\n<
 
 def isInt(intToTest):
 	try: 
