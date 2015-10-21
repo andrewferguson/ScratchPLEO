@@ -284,7 +284,9 @@ def createProjectFile():
 	#pleo personality from loading (it loads the empty 'main.p' into PLEO rather
 	#than the full-featured 'main' stored on PLEO
 	
-	sensorData = "#pragma pack 1" # this compacts all strings so that each char does not occupy a cell
+	
+	sensorData = "#pragma pack 1"# this compacts all strings so that each char does not occupy a cell
+	
 	#add the include files
 	sensorData += "#include <Script.inc>"
 	sensorData += "#include <Sensor.inc>"
@@ -293,7 +295,17 @@ def createProjectFile():
 	if len(soundList) <> 0:
 		sensorData += "#include <Sound.inc>"
 	
+	#do we need to do any init code? (on startup)
+	if initCode <> "":
+		sensorData += "public init()\n{"
+		sensorData += initCode
+		sensorData += "\n}"
 	
+	#do we need to do any sensor code (most likely, but it's always good to check!)
+	if sensorCode <> "":
+		sensorData += "public init()\n{"
+		sensorData += sensorCode
+		sensorData += "\n}"
 	
 
 def isInt(intToTest):
