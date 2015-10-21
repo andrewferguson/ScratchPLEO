@@ -279,6 +279,21 @@ def checkValidVariableName(nameToCheck):
 
 def createProjectFile():
 	#this function creates the requited PAWN file for this project
+	#only 'sensors.p' is actually used for code, but 'main.p' is needed
+	#because it needs an empty 'main' function to prevent the default
+	#pleo personality from loading (it loads the empty 'main.p' into PLEO rather
+	#than the full-featured 'main' stored on PLEO
+	
+	sensorData = "#pragma pack 1" # this compacts all strings so that each char does not occupy a cell
+	#add the include files
+	sensorData += "#include <Script.inc>"
+	sensorData += "#include <Sensor.inc>"
+	if len(motionList) <> 0:
+		sensorData += "#include <Motion.inc>"
+	if len(soundList) <> 0:
+		sensorData += "#include <Sound.inc>"
+	
+	
 	
 
 def isInt(intToTest):
