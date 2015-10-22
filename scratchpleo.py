@@ -95,10 +95,10 @@ def translateScript(tArray):
 		addCode("}")
 	
 	elif tArray[0] == "call":
-		addCode("motion_play(mot_" + tArray[2].lower() + ");")
+		addCode('motion_play_file("' + tArray[2].lower() + '");')
 		if tArray[1][-1:len(tArray[1])] <> "%s":
 			#this is a "...and wait" motion, make sure to wait until it is done
-			addCode("while(motion_is_playing(mot_" + tArray[2].lower() + "))")
+			addCode('while(motion_is_playing("' + tArray[2].lower() + '"))')
 			addCode("{\nsleep;\n}")
 		if tArray[2] not in motionList:
 			motionList.append(tArray[2])
@@ -118,7 +118,7 @@ def translateScript(tArray):
 			dError("Found an expression where a sound file name should be. Only sound files selected through the drop-down menus can be used.")
 		except ValueError:
 			#we have a non-integer thing (a.k.a a string)
-			addCode("sound_play(snd_" + tArray[1].lower() + ");")
+			addCode('sound_play_file("' + tArray[1].lower() + '");')
 			if tArray[1] not in soundList:
 				soundList.append(tArray[1])
 	
@@ -131,8 +131,8 @@ def translateScript(tArray):
 			dError("Found an expression where a sound file name should be. Only sound files selected through the drop-down menus can be used.")
 		except ValueError:
 			#we have a non-integer thing (a.k.a a string)
-			addCode("sound_play(snd_" + tArray[1].lower() + ");")
-			addCode("while (sound_is_playing(snd_" + tArray[1].lower() + "))")
+			addCode('sound_play_file("' + tArray[1].lower() + '");')
+			addCode('while (sound_is_playing("' + tArray[1].lower() + '"))')
 			addCode("{\nsleep;\n}")
 			if tArray[1] not in soundList:
 				soundList.append(tArray[1])
