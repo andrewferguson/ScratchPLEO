@@ -1,5 +1,5 @@
 #Initialise all global variables to empty
-scratchData, scriptArray, initCode, sensorCode, otherCode, currentFunction, variableList, motionList, soundList, broadcastList, receiveList, repeatCount = "", "", "", "", "", "", "", "", "", "", "", 1
+scratchData, scriptArray, initCode, sensorCode, otherCode, currentFunction, variableList, motionList, soundList, broadcastList, receiveList, repeatCount = "", "", "", "", "", "", [], [], [], [], [], 1
 
 import sys #required for command line parameters and to exit the script in an error
 import json #required to convert JSON to list
