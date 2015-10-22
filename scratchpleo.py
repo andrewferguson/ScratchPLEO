@@ -173,10 +173,13 @@ def parseExpression(tArray):
 			validSensors = ["battery","ir","head","chin","back","left_leg","right_leg","left_arm","right_arm","tail","front_left","front_right","back_left","back_right","card_detect","write_protect","light","object","mouth","sound_dir","light_change","sound_loud","tilt","terminal","usb_detect","wakeup","battery_temp","shake","sound_loud_change","beacon","battery_current","packet","edge_in_front","edge_on_right","edge_on_left","object_in_front","object_on_left","object_on_right","touch_tap","touch_hold","touch_release","abuse_picked_up","trackabe_oject","msg_received","msg_gone"]
 			if tArray[7:len(tArray)].lower() in validSensors:
 				#tArray is the name of a sensor
-				print "sensor_get_value(sensor_name: " + tArray.upper() + " )"
+				return "sensor_get_value(sensor_name: " + tArray.upper() + " )"
+			else:
+				dError("Found: '" + tArray + "' in expression, but this sensor is not supported")
 		
 		#we have something invalid
-		dError("Found: '" + tArray + "' in expression, but only sensor names, integers and variables are allowed.")
+		else:
+			dError("Found: '" + tArray + "' in expression, but only sensor names, integers and variables are allowed.")
 	
 	except TypeError:
 		#we have a list
@@ -324,8 +327,5 @@ def isInt(intToTest):
 		print "list"
 
 
-#getScratchJSON()
-#processScript()
-tt= ["hello", "world"]
-checkValidFunctionName(tt)
-print "457"
+getScratchJSON()
+processScript()
