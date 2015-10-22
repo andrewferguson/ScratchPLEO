@@ -102,7 +102,7 @@ def translateScript(tArray):
 
 	elif tArray[0] == "playSound:":
 		try:
-			int(tArray)
+			int(tArray[1])
 			dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
 		except TypeError:
 			#we have a list
@@ -115,7 +115,7 @@ def translateScript(tArray):
 	
 	elif tArray[0] == "doPlaySoundAndWait":
 		try:
-			int(tArray)
+			int(tArray[1])
 			dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
 		except TypeError:
 			#we have a list
