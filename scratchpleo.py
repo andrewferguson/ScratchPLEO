@@ -100,7 +100,7 @@ def translateScript(tArray):
 		#they should not be translated
 		pass
 
-	elif tArray[0] == "playSound":
+	elif tArray[0] == "playSound:":
 		try:
 			int(tArray)
 			dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
@@ -165,7 +165,7 @@ def parseExpression(tArray):
 	try: 
 		int(tArray)
 		#we have an integer
-		dError("Whoa! Something's gone real brokey... Try again, and if you see this message again, email the developer saying 'An integer was found where a string should be', along with a copy of the Scratch Project that caused this error.")
+		return tArray
 		
 	except ValueError:
 		#we have something not an int
