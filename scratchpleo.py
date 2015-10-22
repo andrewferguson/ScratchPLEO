@@ -41,12 +41,13 @@ def translateScript(tArray):
 				currentFunction = "sensor"
 				if sensorCode <> "":
 					addCode("}\n")
-				addCode("if (sensor == " + tArray[1].upper() + "}\n")
+				addCode("if (sensor == " + tArray[1].upper() + ")\n{")
 			else:
 				dError("Sensor: '" + tArray[1] + "' has been used when it is not supported by ScratchPLEO." )
 				
 		else:
 			#this is a normal function call
+			currentFunction = "other"
 			checkValidFunctionName(tArray[1])
 			tArray[1] = tArray[1].replace(" ", "_")
 			receiveList.append(tArray[1])
@@ -84,7 +85,13 @@ def translateScript(tArray):
 	
 	elif tArray[0] == "doWaitUntil":
 		addCode("while " + parseExpression(tArray[1]) + "\n{\nsleep;\n}")
-
+	
+	elif tArray[0] == "doUntil":
+		addCode("while (! " + parseExpression(tArray[1]) + " )\n{")
+		for x in range(0, len(tArray[2])):
+			translateScript(tArray[2][x])
+		addCode("}")
+	
 	elif tArray[0] == "call":
 		addCode("motion_play(mot_" + tArray[2].lower() + ");")
 		if tArray[1][-1:len(tArray[1])] <> "%s":
@@ -291,12 +298,12 @@ def createProjectFile():
 	sensorData = "#pragma pack 1"# this compacts all strings so that each char does not occupy a cell
 	
 	#add the include files
-	sensorData += "#include <Script.inc>"
-	sensorData += "#include <Sensor.inc>"
+	sensorData += "\n#include <Script.inc>"
+	sensorData += "\n#include <Sensor.inc>"
 	if len(motionList) <> 0:
-		sensorData += "#include <Motion.inc>"
+		sensorData += "\n#include <Motion.inc>"
 	if len(soundList) <> 0:
-		sensorData += "#include <Sound.inc>"
+		sensorData += "\n#include <Sound.inc>"
 	sensorData += "\n\n"
 	
 	#do we need to do any init code? (on startup)
@@ -314,8 +321,12 @@ def createProjectFile():
 	
 	#do we need any other code (external function resulting from use of 'When I receive' for non-sensor broadcast messages)
 	if otherCode <> "":
-		otherCode += "\n}" #close off the last function (it does not get closed off automatically)
 		sensorData += otherCode
+		sensorData += "\n}" #close off the last function (it does not get closed off automatically)
+	
+	print sensorData
+
+		
 
 def isInt(intToTest):
 	try: 
@@ -329,3 +340,4 @@ def isInt(intToTest):
 
 getScratchJSON()
 processScript()
+createProjectFile()
