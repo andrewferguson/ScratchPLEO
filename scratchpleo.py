@@ -294,19 +294,25 @@ def createProjectFile():
 		sensorData += "#include <Motion.inc>"
 	if len(soundList) <> 0:
 		sensorData += "#include <Sound.inc>"
+	sensorData += "\n\n"
 	
 	#do we need to do any init code? (on startup)
 	if initCode <> "":
 		sensorData += "public init()\n{"
 		sensorData += initCode
-		sensorData += "\n}"
+		sensorData += "\n}\n\n"
 	
 	#do we need to do any sensor code (most likely, but it's always good to check!)
 	if sensorCode <> "":
-		sensorData += "public init()\n{"
+		sensorData += "public on_sensor(time, sensor_name: sensor, value)\n{"
+		sensorData += "new name[32];\nsensor_get_name(sensor, name);" # store the name of the sensor in the 'sensor' variable
 		sensorData += sensorCode
-		sensorData += "\n}"
+		sensorData += "\n}\n\n"
 	
+	#do we need any other code (external function resulting from use of 'When I receive' for non-sensor broadcast messages)
+	if otherCode <> "":
+		otherCode += "\n}" #close off the last function (it does not get closed off automatically)
+		sensorData += otherCode
 
 def isInt(intToTest):
 	try: 
