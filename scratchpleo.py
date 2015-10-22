@@ -15,6 +15,7 @@ def getScratchJSON():
 	scratchData = scratchFile.read()
 	scratchData = json.loads(scratchData)
 	scratchData = scratchData["children"][0]["scripts"]
+	scratchFile.close()
 
 def processScript():
 	#loop through each 'main'block in the projects code
@@ -318,7 +319,7 @@ def createProjectFile():
 		sensorData += "public on_sensor(time, sensor_name: sensor, value)\n{"
 		sensorData += "new name[32];\nsensor_get_name(sensor, name);" # store the name of the sensor in the 'sensor' variable
 		sensorData += sensorCode
-		sensorData += "\n}\n\n"
+		sensorData += "\n}\n\n}\n" #two '}' are required, one to close the last 'if sensor ==...', the other to close the 'public on_sensor {...'
 	
 	#do we need any other code (external function resulting from use of 'When I receive' for non-sensor broadcast messages)
 	if otherCode <> "":
@@ -328,6 +329,7 @@ def createProjectFile():
 	#now write the PAWN code to a file
 	pawnFile = open("sensors.p", "w")
 	pawnFile.write(sensorData)
+	pawnFile.close()
 	
 	#build the pawn file
 	buildString = "pawncc sensors.p -V2048 -O2 -S64 -v2 -C- -iinclude TARGET=100 -osensors.amx"
