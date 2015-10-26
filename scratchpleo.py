@@ -332,6 +332,15 @@ def createProjectFile():
 	pawnFile.write(sensorData)
 	pawnFile.close()
 	
+	#create another 'bare minimum' pawn file for 'main.p'
+	mainData = "#pragma pack 1"
+	mainData += "\npublic main() {\n"
+	mainData += "while (true) {}\n"
+	mainData += "}"
+	mainFile = open("main.p", "w")
+	mainFile.write(mainData)
+	mainFile.close()
+	
 	#build the pawn file
 	buildString = "pawncc sensors.p -V2048 -O2 -S64 -v2 -C- -iinclude TARGET=100 -osensors.amx"
 	os.system(buildString)
