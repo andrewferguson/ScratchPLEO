@@ -2,6 +2,7 @@
 scratchData, scriptArray, initCode, sensorCode, otherCode, currentFunction, variableList, motionList, soundList, broadcastList, receiveList, repeatCount = "", "", "", "", "", "", [], [], [], [], [], 1
 
 import sys #required for command line parameters and to exit the script in an error
+import zipfile #required to extract the 'project.json' file from a Zip file
 import json #required to convert JSON to list
 import re #required to check for valid variable and function names (using regex patterns)
 import os #required for running the PAWN compiler through os.system("pawncc")...
@@ -11,8 +12,8 @@ def getScratchJSON():
 	
 	global scratchData
 	scratchFile = sys.argv[1]
-	scratchFile = open(scratchFile)
-	scratchData = scratchFile.read()
+	scratchFile = zipfile.ZipFile(scratchFile)
+	scratchData = scratchFile.read("project.json")
 	scratchData = json.loads(scratchData)
 	scratchData = scratchData["children"][0]["scripts"]
 	scratchFile.close()
