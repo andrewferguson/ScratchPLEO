@@ -328,7 +328,7 @@ def createProjectFile():
 		sensorData += "\n}" #close off the last function (it does not get closed off automatically)
 	
 	#now write the PAWN code to a file
-	pawnFile = open("sensors.p", "w")
+	pawnFile = open("build/sensors.p", "w")
 	pawnFile.write(sensorData)
 	pawnFile.close()
 	
@@ -337,14 +337,25 @@ def createProjectFile():
 	mainData += "\npublic main() {\n"
 	mainData += "while (true) {}\n"
 	mainData += "}"
-	mainFile = open("main.p", "w")
+	mainFile = open("build/main.p", "w")
 	mainFile.write(mainData)
 	mainFile.close()
 	
-	#build the pawn file
-	buildString = "pawncc sensors.p -V2048 -O2 -S64 -v2 -C- -iinclude TARGET=100 -osensors.amx"
-	os.system(buildString)
-
+	#check to make sure that we can build the project
+	if os.path.isdir("openpdk"):
+		#build the pawn files (sensors.p and main.p)
+		buildString = "pawncc build/sensors.p -V2048 -O2 -S64 -v2 -C- -iinclude TARGET=100 -obuild/sensors.amx"
+		os.system(buildString)
+		buildString = "pawncc build/main.p -V2048 -O2 -S64 -v2 -C- -iinclude TARGET=100 -obuild/main.amx"
+		os.system(buildString)
+	else:
+		#Free/Libre software solution not found, leave what to do up to the user
+		print "The files were translated sucessfully, however no version of 'OpenPDK' was found"
+		print "\n"
+		print "ScratchPLEO needs OpenPDK, download it off github.com/garethnelson/openpdk and place the folder into the same folder as the scratchpleo.py file."
+		print "\n"
+		print "Alternatively, [NOTE, MORE TECHNICAL], download the Pawn compiler (v3.3) and use it to compile the scripts 'sensors.p' and 'main.p' into two '.amx' files of the same name. The build string is as follows:"
+		print "pawncc build/INPUT.p -V2048 -O2 -S64 -v2 -C- -iinclude TARGET=100 -obuild/OUTPUT.amx"
 		
 
 def isInt(intToTest):
